@@ -36,6 +36,6 @@ Tim_Howe_final_project_presentation.pdf  - the presentation I submitted to the c
 
 cohort_analysis.py  - an example cohort analysis, dividing users into cohorts by week of first visit.
 
-
+funnel_by_country_abs.py - an example funnel analysis. In this case segmenting users by country before the funnel.
 
 
