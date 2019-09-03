@@ -16,6 +16,8 @@ The aim was to instruct the fictional blog owner as to how to spend his advertis
 
 Contained in this repository are my solutions to these basic tasks, implemented in Python using the Pandas, Numpy, and Seaborn.
 
+To run the code, simply place the folder called "CSV" in the CWD. 
+
 
 PACKAGE MANAGEMENT:
 
