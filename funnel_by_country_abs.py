@@ -1,3 +1,48 @@
+''' 
+
+This script segments users by country of origin, and performs a funnel analysis on each segment. 
+Funnel steps are: 
+
+1. Read a first article
+2. Returned to read a second article
+3. Subscribe
+4. Purchase paid content
+
+df_firstread - a PANDAS dataframe of first visits to the blog, with columns:  
+
+ my_datetime 
+ event
+ country
+ user_id
+ source
+ topic
+ ch_group
+ my_week
+
+df_subs, df_buy, df_lateread - 3 PANDAS dataframes of subsequent actions taken on the blog, with columns:
+
+ my_datetime
+ event
+ user_id
+ my_week
+
+Required INPUTS: 
+
+Folder "CSV", placed inside the directory you run this script from, containing:
+D_subs.csv
+D_buy.csv 
+D_firstreads.csv
+D_latereads.csv  
+
+script OUTPUTS:
+
+PDF file "dilan_funnel_by_country_abs.pdf"
+
+ 
+'''
+#
+
+
 # Package management
 import pandas as pd
 import numpy as np

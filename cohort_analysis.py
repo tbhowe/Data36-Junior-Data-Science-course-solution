@@ -1,13 +1,12 @@
 ''' 
-
 This script generates a cohort analysis of user retention, with cohorts specified by the week 
 on which a user read their first article.
+
 The user was considered "retained" in a given week if they returned to the site to perform any action.
 
 Once loaded, the data are as follows: 
 
 df_firstread - a PANDAS dataframe of first visits to the blog, with columns:  
-
  my_datetime 
  event
  country
@@ -18,22 +17,24 @@ df_firstread - a PANDAS dataframe of first visits to the blog, with columns:
  my_week
 
 df_subs, df_buy, df_lateread - 3 PANDAS dataframes of subsequent actions taken on the blog, with columns:
-
  my_datetime
  event
  user_id
  my_week
 
-Required inputs: 
-
+Required INPUTS: 
 Folder "CSV", placed inside the directory you run this script from, containing:
 D_subs.csv
 D_buy.csv 
 D_firstreads.csv
 D_latereads.csv  
+
+script OUTPUTS:
+
+PDF file "dilan_cohort_output.pdf"
  
 '''
-#
+
 
 # Package management
 import pandas as pd
