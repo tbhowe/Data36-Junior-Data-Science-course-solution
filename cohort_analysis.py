@@ -1,4 +1,5 @@
 ''' 
+
 This script generates a cohort analysis of user retention, with cohorts specified by the week 
 on which a user read their first article.
 The user was considered "retained" in a given week if they returned to the site to perform any action.
@@ -25,12 +26,11 @@ df_subs, df_buy, df_lateread - 3 PANDAS dataframes of subsequent actions taken o
 
 Required inputs: 
 
+Folder "CSV", placed inside the directory you run this script from, containing:
 D_subs.csv
 D_buy.csv 
 D_firstreads.csv
 D_latereads.csv  
-
-OUTPUTS: a pdf document called 'dilan_cohort_output.pdf'
  
 '''
 #
@@ -43,14 +43,22 @@ import matplotlib as mpl
 import seaborn as sns
 from datetime import datetime
 import matplotlib.dates as mdates
+import os
 
 #load data from CSV
+fileDir = os.path.dirname(os.path.realpath('__file__'))
 
-df_subs=pd.read_csv('/home/sozbothorbos/JDSjun2019/dilan/D_subs.csv', delimiter = ';', names = ['my_datetime', 'event', 'user_id'])
+filename = os.path.join(fileDir, 'CSV/D_subs.csv')
+df_subs=pd.read_csv(filename, delimiter = ';', names = ['my_datetime', 'event', 'user_id'])
 
-df_buy=pd.read_csv('/home/sozbothorbos/JDSjun2019/dilan/D_buy.csv', delimiter = ';', names = ['my_datetime', 'event', 'user_id','price'])
-df_firstread=pd.read_csv('/home/sozbothorbos/JDSjun2019/dilan/D_firstreads.csv', delimiter = ';', names = ['my_datetime', 'event', 'country', 'user_id','source', 'topic'])
-df_lateread=pd.read_csv('/home/sozbothorbos/JDSjun2019/dilan/D_latereads.csv', delimiter = ';', names = ['my_datetime', 'event', 'country', 'user_id','topic'])
+filename = os.path.join(fileDir, 'CSV/D_buy.csv')
+df_buy=pd.read_csv(filename, delimiter = ';', names = ['my_datetime', 'event', 'user_id','price'])
+
+filename = os.path.join(fileDir, 'CSV/D_firstreads.csv')
+df_firstread=pd.read_csv(filename, delimiter = ';', names = ['my_datetime', 'event', 'country', 'user_id','source', 'topic'])
+
+filename = os.path.join(fileDir, 'CSV/D_latereads.csv')
+df_lateread=pd.read_csv(filename, delimiter = ';', names = ['my_datetime', 'event', 'country', 'user_id','topic'])
 
 
 
