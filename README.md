@@ -32,4 +32,6 @@ CSV  -  folder containing the CSV files of logged events from the fictional trav
         - D_subs.csv        # log of user subscription events
         - D_buy.csv         # log of users' purchases on the site
 
+Tim_Howe_final_project_presentation.pdf  - the presentation I submitted to the course organiser.
+
 
