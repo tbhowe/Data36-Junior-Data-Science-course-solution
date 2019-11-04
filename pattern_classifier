@@ -1,6 +1,6 @@
 # A script to implement a basic random forest pattern classifier. 
 # The task here was to predict the values of empty fields in the user log (here specifically device OS type) given the other information known about the user.
-# the script trains the RF on the first half of the data and predicts on the second half.
+# the script trains the RF on a 70/30 train/test split.
 # the script also implements one-hot encoding of discrete, non-correlated variables, and a basic readout of feature contributions. 
 #In this case the number of free articles read by the user was the most salient feature by nearly an order of magnitude, and a classifier based on this feature alone would likely be
 # almost as good!
