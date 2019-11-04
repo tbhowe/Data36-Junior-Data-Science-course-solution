@@ -1,0 +1,112 @@
+# A script to implement a basic random forest pattern classifier. 
+# The task here was to predict the values of empty fields in the user log (here specifically device OS type) given the other information known about the user.
+# the script trains the RF on the first half of the data and predicts on the second half.
+# the script also implements one-hot encoding of discrete, non-correlated variables, and a basic readout of feature contributions. 
+#In this case the number of free articles read by the user was the most salient feature by nearly an order of magnitude, and a classifier based on this feature alone would likely be
+# almost as good!
+
+# import libs
+
+import numpy as np
+import pandas as pd
+import psycopg2 as pg
+import pandas.io.sql as psql
+import matplotlib
+from sklearn.model_selection import train_test_split
+from sklearn.ensemble import RandomForestClassifier
+from sklearn import metrics
+from sklearn.preprocessing import OneHotEncoder
+from sklearn import preprocessing
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# import "send-a-tree" log data from psql
+
+connection = pg.connect("dbname=postgres user=sozbothorbos")
+free_send =psql.read_sql("SELECT * from free_send", connection)
+paid_send=psql.read_sql("SELECT * from paid_send", connection)
+registration=psql.read_sql("SELECT * from registration", connection)
+
+# create counts of free and paid "tree sends"
+
+freecount=pd.merge(free_send, registration, how='left',left_on = 'send_uid', right_on = 'reg_uid' )
+paidcount=pd.merge(paid_send, registration, how='left',left_on = 'send_uid', right_on = 'reg_uid' )
+pc2=paidcount.groupby('send_uid').count().send_date.reset_index(name='ps_count')
+fc2=freecount.groupby('send_uid').count().send_date.reset_index(name='fr_count')
+
+# create a dataframe where each reg entry has counts of free and paid sends, set NaNs to zero
+
+cumulate=pd.merge(registration, fc2, how='left',left_on = 'reg_uid', right_on = 'send_uid' )
+cumulate=pd.merge(cumulate,pc2, how='left', left_on = 'reg_uid', right_on = 'send_uid')
+cumulate=cumulate.drop(["send_uid_x", "send_uid_y", "reg_action"], axis=1)
+cumulate=cumulate.fillna(0)
+
+#### ONE - HOT encoding ##############################################
+
+# assign variable numbers fo (uncomment as necessary for the different segmentations)
+numassign = {"os": {"android": 0, "ios": 1, "error": 3}}
+             #"source": {"article": 0, "google": 1, "invite_a_friend": 2, "paid": 3}, 
+            # "country":{"brazil": 0,"germany": 1 ,"philippines": 2, "sweden": 3, "united_states": 4}}
+cumulate.replace(numassign, inplace=True)
+onehots_array=cumulate[['country','source']]
+onehots_array.head()
+
+# apply one-hot encoding
+
+# 1. INSTANTIATE
+enc = preprocessing.OneHotEncoder()
+
+# 2. FIT
+enc.fit(onehots_array)
+
+# 3. Transform
+onehotlabels = enc.transform(onehots_array).toarray()
+labbo=enc.get_feature_names()
+oh_done=pd.DataFrame(onehotlabels, columns=labbo)
+
+# place one-hot labels back in original DF
+
+cumulate_done= pd.concat([cumulate, oh_done], axis=1)
+
+######## PATTERN CLASSIFICATION #############################################
+
+#establish train/test and prediction subsets
+predict_idx=cumulate_done['os'] == 3
+prediction_set=cumulate_done.loc[predict_idx]
+fulltrain_idx=cumulate_done['os'] != 3
+fulltrain_set=cumulate_done.loc[fulltrain_idx]
+
+lablist=labbo.tolist()
+feature_index=['fr_count', 'ps_count']
+feature_index.extend(labbo)
+ #list of features to care about
+
+#feature_index=['fr_count']
+X=fulltrain_set[feature_index]  # Features
+y=fulltrain_set['os'] # labels
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3) # 70% training and 30% test
+X_predictions=prediction_set[feature_index]
+
+clf=RandomForestClassifier(n_estimators=1000)
+clf.fit(X_train,y_train)
+y_pred=clf.predict(X_test)
+y_realpred=clf.predict(X_predictions)
+
+
+# Model Accuracy, how often is the classifier correct?
+print("Accuracy:",metrics.accuracy_score(y_test, y_pred))
+print("c-mat:",metrics.confusion_matrix(y_test, y_pred))
+
+##### PLOT FEATURE IMPORTANCE (seaborn) ####################
+
+feature_imp = pd.Series(clf.feature_importances_,index=feature_index).sort_values(ascending=False)
+
+%matplotlib inline
+# Creating a bar plot
+sns.barplot(x=feature_imp, y=feature_imp.index)
+# Add labels to your graph
+plt.xlabel('Feature Importance Score')
+plt.ylabel('Features')
+plt.title("Visualizing Important Features")
+plt.legend()
+plt.show()
