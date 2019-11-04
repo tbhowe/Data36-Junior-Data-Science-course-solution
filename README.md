@@ -1,5 +1,5 @@
 # Data36-Junior-Data-Science-course-solution
-My solution to the "Junior Data Scientist's First Month" course final project, run by data36.com. 
+My solution to the "Junior Data Scientist's First Month" course final project, run by data36.com. Also contains a basic implementation of a random forest pattern classifier, which was not used in the solution, but was used for another task in the course.
 
 
 DESCRITPION:
@@ -39,5 +39,8 @@ Tim_Howe_final_project_presentation.pdf  - the presentation I submitted to the c
 cohort_analysis.py  - an example cohort analysis, dividing users into cohorts by week of first visit.
 
 funnel_by_country_abs.py - an example funnel analysis. In this case segmenting users by country before the funnel.
+
+pattern_classifier.py - an example of a random forest pattern classifier. The task here was to predict the values of empty fields in the user log (here specifically device OS type) given the other information known about the user.
+ the script trains the RF on a 70/30 train/test split, and also implements one-hot encoding of discrete, non-correlated variables, and a basic readout of feature contributions. 
 
 
